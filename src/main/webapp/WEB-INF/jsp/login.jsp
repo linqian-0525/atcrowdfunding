@@ -37,15 +37,15 @@
         <h2 class="form-signin-heading"><i class="glyphicon glyphicon-log-in"></i> 用户登录</h2>
         ${exception.message}
         <div class="form-group has-success has-feedback">
-            <input type="text" class="form-control"  name="loginacct" placeholder="请输入登录账号" autofocus>
+            <input type="text" id="floginacct" class="form-control"  name="loginacct" placeholder="请输入登录账号" autofocus>
             <span class="glyphicon glyphicon-user form-control-feedback"></span>
         </div>
         <div class="form-group has-success has-feedback">
-            <input type="password" class="form-control"  name="userpswd" placeholder="请输入登录密码" style="margin-top:10px;">
+            <input type="password" class="form-control" id="fuserpswd"  name="userpswd" placeholder="请输入登录密码" style="margin-top:10px;">
             <span class="glyphicon glyphicon-lock form-control-feedback"></span>
         </div>
         <div class="form-group has-success has-feedback">
-            <select class="form-control" name="type">
+            <select class="form-control" name="type" id="ftype">
                 <option value="member">会员</option>
                 <option value="user">管理</option>
             </select>
@@ -69,7 +69,38 @@
 <script src=${APP_PATH}/bootstrap/js/bootstrap.min.js"></script>
 <script>
     function dologin() {
-        $('#loginform').submit();
+        var floginacct = $('#floginacct');
+        var fuserpswd= $('#fuserpswd');
+        var ftype = $('#ftype');
+        /**异步提交*/
+        $.ajax({
+            type : "post",
+            dataType:"json",
+            data : {
+                "loginacct" : floginacct.val(),
+                "userpswd" : fuserpswd.val(),
+                "type" : ftype.val()
+
+            },
+            url : "${APP_PATH}/dologin.do" ,
+            beforeSend : function () {
+                //一般做表单数据校验
+                return true ;
+            },
+            success : function (result) {
+              //  alert(result);
+                if (result.success) {
+                    alert("ok");
+                }else{
+                    alert("not ok");
+                }
+            },
+            error : function () {
+                alert("error");
+            }
+        });
+        //同步请求
+       // $('#loginform').submit();
      /*   var type = $(":selected").val();
         if ( type == "user" ) {
             window.location.href = "main.html";
