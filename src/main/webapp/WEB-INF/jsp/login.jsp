@@ -72,6 +72,13 @@
         var floginacct = $('#floginacct');
         var fuserpswd= $('#fuserpswd');
         var ftype = $('#ftype');
+        //对于表单数据而言不能用null进行判断，如果文本什么都不输入，获取的值是""
+        if($.trim(floginacct.val()) == ""){
+            alert("用户账户不能为空，请重新输入");
+            floginacct.val("");
+            floginacct.focus();
+            return false;
+        }
         /**异步提交*/
         $.ajax({
             type : "post",
@@ -90,7 +97,7 @@
             success : function (result) {
               //  alert(result);
                 if (result.success) {
-                    alert("ok");
+                   window.location.href="${APP_PATH}/main.htm"
                 }else{
                     alert("not ok");
                 }

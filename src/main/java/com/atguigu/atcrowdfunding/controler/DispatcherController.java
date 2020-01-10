@@ -4,7 +4,9 @@ import com.atguigu.atcrowdfunding.bean.User;
 import com.atguigu.atcrowdfunding.service.UserService;
 import com.atguigu.atcrowdfunding.util.AjaxResult;
 import com.atguigu.atcrowdfunding.util.Const;
+import com.atguigu.atcrowdfunding.util.MD5Util;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -14,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Controller
+@Scope("prototype")
 public class DispatcherController {
     @Autowired
     private UserService userService;
@@ -41,7 +44,7 @@ public class DispatcherController {
         try {
             Map<String,Object> paramMap = new HashMap<>();
             paramMap.put("loginacct",loginacct);
-            paramMap.put("userpswd",userpswd);
+            paramMap.put("userpswd", MD5Util.digest(userpswd));
             paramMap.put("type",type);
             User user = userService.queryUserlogin(paramMap);
             session.setAttribute(Const.LOGIN_USER,user);
@@ -52,6 +55,11 @@ public class DispatcherController {
             result.setSuccess(false);
         }
         return result;
+    }
+    @RequestMapping("/logout")
+    public String logout(HttpSession session){
+        session.removeAttribute("user");
+        return "redirect:/index.htm";
     }
     //同步请求方式
    /* @RequestMapping("/dologin")
